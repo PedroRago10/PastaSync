@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PastaSync</title>
+    <link rel="stylesheet" href="../assets/style/app.css" />
+</head>
+<body>
+    <div id="main">
+        <div class="main-body">
+            <div class='header'>
+                <button type="button" class='button-back' title="Deslogar">
+                    <img src="../assets/img/next.png" alt="">
+                </button>
+                <h1>
+                    <img src="../assets/img/labs_white_icon.png" alt="">
+                    PastaSync
+                </h1>
+                <button type="button" id="buttonClose" class="button-close" title="Fechar">
+                    <img src="../assets/img/close.png" alt="">
+                </button>
+            </div> 
+            <div class='body body-config'>
+                <div class="body-banner">
+                    <div class="profile-box" style="background-image: url(../assets/img/default-profile.png);">
+                    </div>
+                </div>
+            </div>
+            <div class="footer footer-config">
+              <p class='p-user'><strong>Buscando usuário</strong></p>
+              <p class='p-role'>Buscando cargo</p>
+
+                 <form>
+                    <label>
+                        Selecione uma empresa
+                        <select name="companies">
+                      </select>
+                    </label>
+                    <label>
+                        Selecione um evento
+                      <select  name="events" disabled>
+                      </select>
+                    </label>
+                    <div id="error-message" class="error-message"></div>
+                </form>
+            </div>
+        </div>
+        <div class="div-button">
+            <button id="saveConfigurationsBtn" >Salvar Configurações</button>
+        </div>
+    </div>
+    <script src="../scripts/configurations.js"></script>
+</body>
+</html>

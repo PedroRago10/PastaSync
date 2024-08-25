@@ -1,0 +1,326 @@
+@font-face {
+    font-family: 'Inter';
+    src: url('./src/assets/fonts/Inter-VariableFont_opsz,wght.ttf') format('truetype');
+    font-weight: 100 900;
+    /* Intervalo de pesos de 100 a 900 */
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Inter Italic';
+    src: url('./src/assets/fonts/Inter-Italic-VariableFont_opsz,wght.ttf') format('truetype');
+    font-weight: 100 900;
+    font-style: italic;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', sans-serif;
+  width:100%;
+  height: auto;
+    margin: 0 auto;
+}
+
+/* Usando a versão itálica */
+.italic-text {
+    font-family: 'Inter Italic', sans-serif;
+}
+
+#main {
+    background-color: #171717;
+    border-radius: 1.25rem;
+    height: auto;
+    box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.2);
+    /* Sombra para realçar o efeito */
+}
+
+.main-body {
+    padding: 2rem;
+    padding-bottom: 0;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    -webkit-app-region: drag;
+}
+
+.button-close, .button-back {
+    -webkit-app-region: no-drag; /* Impede que os botões sejam arrastáveis */
+}
+
+.header h1 {
+    font-size: 1.125rem;
+    color: #FFF;
+    display: flex;
+    align-items: center;
+    margin: 0;
+}
+
+.header h1 img {
+    max-width: 1.25rem;
+    margin: 0;
+    margin-right: 0.5rem;
+}
+
+.header button {
+    background-color: #232323;
+    border: 0;
+    border-radius: 50%;
+    height: 1.5rem;
+    width: 1.5rem;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    justify-content: center;
+}
+
+.header button img {
+    opacity: 0.8;
+    max-width: 0.625rem;
+}
+
+.header .button-back img {
+    max-width: 0.625rem;
+    transform: rotate(-180deg);
+}
+
+.header .button-back {
+    border-radius: 0.5rem;
+    width: 1.875rem;
+    padding: 0 0.3125rem;
+}
+
+.body {
+    background-color: #121212;
+    height: auto;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 1rem;
+    margin-top: 1.25rem;
+}
+.body-main {
+    height: 12.5rem;
+}
+
+.footer {
+    margin-top: 1.25rem;
+}
+
+.footer p {
+    font-size: 0.875rem;
+    color: #737373;
+}
+
+.footer p strong {
+    font-weight: 400;
+    color: #FFF;
+}
+
+.footer .p-to-log {
+    margin-top: 1.25rem;
+}
+
+.footer .p-to-log span {
+    color: #aace14;
+    cursor: pointer;
+}
+
+.div-button {
+    border-top: 0.0625rem solid #1e1e1e;
+    padding: 1.125rem 2rem;
+}
+
+.div-button button {
+    width: 100%;
+    color: #121212;
+    background-color: #e9e9e9;
+    border-radius: 0.625rem;
+    border: 0;
+    padding: 0.75rem 0;
+    transition: 0.5s ease-in-out;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.div-button button:hover {
+    background-color: #FFF;
+}
+
+.div-button button:active {
+    background-color: #e0e0e0;
+}
+
+.div-button button:focus {
+    background-color: #e0e0e0;
+}
+
+.body-box {
+    background-color: #212121;
+    border-radius: 1.125rem;
+    width: 5rem;
+    height: 5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.body-box img {
+    max-width: 50%;
+}
+
+.img-connection {
+    max-width: 3.75rem;
+    margin-left: 0.625rem;
+    margin-right: 0.625rem;
+}
+
+.body-box {
+    color: #625afe;
+    font-weight: 700;
+}
+
+.sync {
+    background-color: #aace14 !important;
+}
+
+.body-login {
+    margin-bottom: 1.25rem;
+    width: 100%;
+}
+.body-login form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 2rem 1.875rem;
+    justify-content: flex-end;
+}
+
+form label {
+    display: flex;
+    flex-direction: column;
+    color: #FFF;
+    margin-bottom: 1rem;
+    font-size: 0.75rem;
+}
+
+form label input, form label select {
+    padding: 0.625rem 1.25rem;
+    margin-top: 0.3125rem;
+    border-radius: 0.375rem;
+    border: 0;
+}
+.p-title {
+    color: #fff;
+    font-size: 14px;
+    margin-bottom: 2rem;
+    margin-top: 0;
+}
+form label select:focus, form label input:focus, form label input:active, form label select:active {
+    border: 0.0625rem solid #aace14;
+    outline-color: #aace14;
+}
+
+.main-body-login .button-back {
+    background-color: transparent;
+    opacity: 0;
+    cursor: unset;
+}
+
+.main-body-login .button-back img {
+    opacity: 0;
+}
+
+.error-message {
+    border: 0.0625rem solid #f87859;
+    background-color: rgba(248, 120, 89, 0.69);
+    color: #212121;
+    border-radius: 0.375rem;
+    padding: 0.625rem 1.25rem;
+    font-size: 0.75rem;
+    display: none;
+    margin-top: 1rem;
+}
+
+.message-error-display {
+    display: block;
+}
+
+.loading-image {
+    width: 1rem;
+    height: 1rem;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.p-monitore {
+    display: none;
+}
+
+.p-monitore span {
+    color: #625afe;
+    font-size: 0.75rem;
+}
+
+.body-banner {
+    width: 100%;
+    height: 100%;
+    border-radius: 0.5rem;
+    background-size: cover;
+    background-repeat: no-repeat;
+    position: relative;
+}
+
+.body-config {
+    height: 9.5rem;
+}
+
+.profile-box {
+    position: absolute;
+    bottom: -2rem;
+    left: 1rem;
+    width: 4rem;
+    height: 4rem;
+    overflow: hidden;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 0.3125rem solid #171717;
+    background-size: cover;
+    background-position: center;
+}
+
+.profile-box img {
+    width: 100%;
+}
+
+.footer-config {
+    margin-top: 2.875rem;
+    margin-bottom: 1.5rem;
+    padding: 0 1.2rem;
+}
+
+.footer-config .p-user {
+    margin-bottom: 0.5rem;
+    text-transform: capitalize;
+}
+
+.footer-config .p-role {
+    margin: 0;
+    font-size: 0.75rem;
+    color: #aace14;
+}
+
+.footer-config form {
+    margin-top: 1.5rem;
+}
+
+.forget-password {
+      color: #aace14;
+    font-size: 12px;
+}

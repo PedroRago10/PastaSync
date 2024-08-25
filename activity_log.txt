@@ -1,0 +1,18 @@
+[2024-08-21T18:58:59.114Z] Login: Erro no login: Request failed with status code 400
+[2024-08-21T18:58:59.115Z] Login: Detalhes da resposta de erro: Status: 400, Data: {"errors":["email must match the following: \"/^(([^<>()\\[\\]\\\\.,;:\\s@\"]+(\\.[^<>()\\[\\]\\\\.,;:\\s@\"]+)*)|(\".+\"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$/\"","Senha deve ter no mínimo de 9 caracteres","Password must contain at least one letter, one number, and one special character"]}
+[2024-08-21T19:11:45.464Z] Login: Login bem-sucedido.
+[2024-08-21T19:11:49.996Z] Arquivo Adicionado: C:\Users\Pedro\Documents\SSSSS\Capturar.PNG
+[2024-08-21T19:11:50.006Z] Monitoramento Iniciado: C:\Users\Pedro\Documents\SSSSS
+[2024-08-21T19:16:28.213Z] Login: Login bem-sucedido.
+[2024-08-21T19:16:34.619Z] Arquivo Adicionado: C:\Users\Pedro\Documents\SSSSS\Capturar.PNG
+[2024-08-21T19:16:34.627Z] Monitoramento Iniciado: C:\Users\Pedro\Documents\SSSSS
+[2024-08-21T19:16:35.075Z] Upload bem-sucedido: https://nyc3.digitaloceanspaces.com/samambaialabs-bucket/Capturar.PNG
+[2024-08-21T19:17:29.986Z] Arquivo Adicionado: C:\Users\Pedro\Documents\SSSSS\Capturar - Copia.PNG
+[2024-08-21T19:17:30.419Z] Upload bem-sucedido: https://nyc3.digitaloceanspaces.com/samambaialabs-bucket/Capturar%20-%20Copia.PNG
+[2024-08-21T19:19:04.984Z] Login: Erro no login: Request failed with status code 400
+[2024-08-21T19:19:04.984Z] Login: Detalhes da resposta de erro: Status: 400, Data: {"errors":["email must match the following: \"/^(([^<>()\\[\\]\\\\.,;:\\s@\"]+(\\.[^<>()\\[\\]\\\\.,;:\\s@\"]+)*)|(\".+\"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$/\"","Senha deve ter no mínimo de 9 caracteres","Password must contain at least one letter, one number, and one special character"]}
+[2024-08-21T19:19:37.113Z] Login: Login bem-sucedido.
+[2024-08-21T19:34:32.081Z] Login: Login bem-sucedido.
+[2024-08-21T19:34:47.983Z] Monitoramento Iniciado: C:\Users\Pedro\Documents\TESTE
+[2024-08-21T19:35:15.514Z] Arquivo Adicionado: C:\Users\Pedro\Documents\TESTE\Capturar.PNG
+[2024-08-21T19:35:15.960Z] Upload bem-sucedido: https://nyc3.digitaloceanspaces.com/samambaialabs-bucket/Capturar.PNG

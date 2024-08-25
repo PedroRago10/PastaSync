@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="../assets/style/app.css" />
+</head>
+<body>
+    <div id="main">
+        <div class="main-body main-body-login">
+            <div class='header'>
+                <button type="button" class='button-back'>
+                    <img src="../assets/img/next.png" alt="">
+                </button>
+                <h1>
+                    <img src="../assets/img/labs_white_icon.png" alt="">
+                    PastaSync
+                </h1>
+                <button type="button" id="buttonClose" class="button-close">
+                    <img src="../assets/img/close.png" alt="">
+                </button>
+            </div>
+            <div class='body body-login'>
+                <form>
+                  <p class='p-title'>Acessar conta</p>
+                    <label>
+                        E-mail
+                        <input type="text" id="email" placeholder="Email" />
+                    </label>
+                    <label>
+                        Senha
+                        <input type="password" id="password" placeholder="Password" />
+                    </label>
+                    
+                    <a href="" class='forget-password'>Esqueceu a senha?<a/>
+                    <div id="error-message" class="error-message"></div>
+                </form>
+            </div>
+        </div>
+        <div class="div-button">
+            <button id="loginButton" onclick="login()">Entrar</button>
+        </div>
+    </div>
+    <script src="../scripts/login.js"></script>
+</body>
+</html>

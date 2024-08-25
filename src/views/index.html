@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PastaSync</title>
+    <link rel="stylesheet" href="../assets/style/app.css" />
+</head>
+<body>
+    <div id="main">
+        <div class="main-body">
+            <div class='header'>
+                <button type="button" class='button-back' title="Deslogar">
+                    <img src="../assets/img/next.png" alt="">
+                </button>
+                <h1>
+                    <img src="../assets/img/labs_white_icon.png" alt="">
+                    PastaSync
+                </h1>
+                <button type="button" id="buttonClose" class="button-close" title="Fechar">
+                    <img src="../assets/img/close.png" alt="">
+                </button>
+            </div>
+            <div class='body body-main'>
+                <div class="body-box">
+                    <img src="../assets/img/open-folder.png" alt="">
+                </div>
+                <img class="img-connection" src="../assets/img/connection-red.svg" alt="">
+                <div class="body-box body-box-api">
+                    <img src="../assets/img/labs_white_icon.png"  class="labs-icon" alt="">
+                </div>
+            </div>
+            <div class="footer">
+                <p><strong>PastaSync</strong> automaticamente sincroniza sua pasta selecionada, monitorando cada evento e salvando seus arquivos de forma segura em sua nuvem. </p>
+                <p class="p-to-log">Deseja monitorar as logs? <span id="openLogBtn">Clique aqui</span></p>
+                <p class="p-monitore">Pasta monitorada: <span></span></p>
+            </div>
+        </div>
+        <div class="div-button">
+            <button id="selectFolderBtn">Selecionar Pasta</button>
+        </div>
+    </div>
+    <script src="../scripts/renderer.js"></script>
+</body>
+</html>
