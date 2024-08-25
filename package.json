@@ -27,7 +27,7 @@
     ],
     "win": {
       "target": "nsis",
-      "icon": "src/assets/img/labs.ico"
+      "icon": "src/assets/img/labs_icon.ico"
     },
     "mac": {
       "target": "dmg",

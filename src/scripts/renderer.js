@@ -61,7 +61,7 @@ class RendererView {
         this.monitoreElement.style.display = 'block';
         this.selectFolderBtn.textContent = 'Pasta sincronizada';
         this.selectFolderBtn.classList.add('sync');
-        document.querySelector(".labs-icon").src = "../assets/img/labs_icon.png";
+        document.querySelector(".labs-icon").src = "../assets/img/labs_icon.svg";
         document.querySelector(".img-connection").src = "../assets/img/connection.svg";
     }
 
