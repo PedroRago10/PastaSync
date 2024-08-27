@@ -324,3 +324,28 @@ form label select:focus, form label input:focus, form label input:active, form l
       color: #aace14;
     font-size: 12px;
 }
+.ts-wrapper.single {
+    margin-top: 5px;
+}
+.ts-control  {
+border-radius: 6px;
+padding: 8px 14px;
+border: 2px solid #dbdbdb;
+}
+
+.ts-dropdown.single {
+margin-top: 3px;
+border-radius: 8px;
+border: 2px solid #dbdbdb;
+}
+
+.ts-dropdown .active {
+background-color: #f1f1f1;
+color: #0a0a0a;
+}
+.ts-dropdown [data-selectable].option, .ts-dropdown .option, .ts-dropdown .optgroup-header, .ts-dropdown .no-results, .ts-dropdown .create {
+padding: 11px 15px; 
+}
+.ts-dropdown .active.create {
+color: #000000;
+}

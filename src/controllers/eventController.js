@@ -8,21 +8,14 @@ const logger = require('../helpers/logger');
  * @param {String} companyId - The ID of the company.
  * @returns {Array} - The list of events for the specified company and user.
  */
-async function fetchCompanyEvents(companyId) {
+async function fetchCompanyEvents(companyId, eventName = false) {
     try {
-        console.log("Iniciando fetchCompanyEvents...");
-
         if (!tokenModel.token) {
             throw new Error('Token não disponível');
         }
 
         const user = userModel.getUserData();
         const userId = user.id;
-
-        console.log("Dados do usuário:", user);
-        console.log("ID do usuário:", userId);
-        console.log("ID da empresa:", companyId);
-        console.log("ID de permissão:", user.permissionId);
 
         const config = {
             headers: {
@@ -33,42 +26,131 @@ async function fetchCompanyEvents(companyId) {
 
         const API_URL = process.env.API_URL || "https://api.samambaialabs.com.br";
 
-        console.log("Enviando requisição GET para:", `${API_URL}/event/company-user-events`);
-        console.log("Parâmetros da requisição:", { userId, companyId });
+        let dataParams = {
+            userId,
+            companyId,
+        }
+        
+        if (eventName && eventName.trim() !== "") {
+            dataParams = {
+                ...dataParams,
+                eventName
+            }
+        }
 
         const response = await axios.get(`${API_URL}/event/company-user-events`, {
-            params: { userId, companyId },
+            params: dataParams,
             ...config
         });
 
-        console.log("Resposta recebida da API:", response);
-
         if (response.status === 200 && Array.isArray(response.data.events)) {
-            console.log("Eventos retornados pela API:", response.data.events);
-            return response.data.events; 
+            return response.data.events;
         } else {
-            console.log("Nenhum evento encontrado ou resposta inválida.");
             logger.logEvent('Error fetching events', 'Nenhum evento encontrado ou resposta inválida.');
             return [];
         }
     } catch (error) {
-        console.log("Erro ao buscar eventos:", error.message);
         logger.logEvent('Error fetching events', error.message);
         if (error.response) {
-            console.log("Detalhes da resposta de erro:", error.response.data);
             logger.logEvent('Error details', JSON.stringify(error.response.data));
         } else if (error.request) {
-            console.log("Nenhuma resposta recebida do servidor:", error.request);
             logger.logEvent('Error', 'Nenhuma resposta recebida do servidor.');
         } else {
-            console.log("Erro ao configurar a requisição:", error.message);
             logger.logEvent('Error', `Erro ao buscar eventos: ${error.message}`);
         }
         return [];
     }
 }
 
+/**
+ * Create new event on API endpoint
+ * @param {Object} eventName - Text of the input event name
+ * @returns {Boolean} - Boolean if success or not
+ */
+async function handleCreateEvent(eventName, companyId) {
+    try {
+        if (!tokenModel.token) {
+            throw new Error('Token não disponível');
+        }
+
+        if (!eventName || eventName == '') {
+            throw new Error('Evento não encontrado, parâmetros inválidos');
+        }
+        const user = userModel.getUserData();
+        const userId = user.id;
+
+        const eventExists = await fetchCompanyEvents(companyId, eventName);
+
+        if(eventExists && eventExists.length > 0) {
+            logger.logEvent('Error create event', 'Esse evento já foi criado com o mesmo nome.');
+            return {
+                error: true,
+                message: "Já existe um evento com esse nome criado e ativo."
+            };
+        };
+
+        const config = {
+            headers: {
+                'Authorization': `Bearer ${tokenModel.token}`,
+                'X-Permission-Id': user.permissionId,
+                'Content-Type': 'application/json',
+            }
+        };
+
+        const API_URL = process.env.API_URL || "https://api.samambaialabs.com.br";
+
+        const response = await axios.post(`${API_URL}/event/create`, {
+            name: eventName,
+            date: new Date().toISOString(),
+            companyId: companyId,
+            guestsNumber: 0,
+            users: [userId]
+        }, {
+            ...config
+        });
+        if (response.status === 201) {
+
+            if (!response.data.message._id) {
+                logger.logEvent('Error create event', 'API retornou 201 porém _id não localizado..a');
+                
+                return {
+                    error: true,
+                    message: "Ocorreu um erro inesperado, entre em contato com um administrador."
+                };
+            }
+
+            return {
+                error: false,
+                message: "Sucesso ao criar um novo evento.",
+                data: response.data.message._id
+            };
+
+        } else {
+            logger.logEvent('Error create event', 'Erro ao tentar criar evento na API. ' + response.data.error);
+            return {
+                error: true,
+                message: "Ocorreu um erro inesperado, entre em contato com um administrador.",
+            };
+
+        }
+    } catch (error) {
+        logger.logEvent('Error save event', error.message);
+        if (error.response) {
+            logger.logEvent('Error details', JSON.stringify(error.response.data));
+        } else if (error.request) {
+            logger.logEvent('Error', 'Nenhuma resposta recebida do servidor.');
+        } else {
+            logger.logEvent('Error', `Erro ao buscar eventos: ${error.message}`);
+        }
+
+        return {
+            error: true,
+            message: "Ocorreu um erro inesperado, entre em contato com um administrador.",
+        };
+    }
+}
 
 module.exports = {
-    fetchCompanyEvents
+    fetchCompanyEvents,
+    handleCreateEvent
 };

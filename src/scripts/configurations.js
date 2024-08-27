@@ -23,9 +23,9 @@ class ConfigurationsView {
     /**
      * Sets up IPC listeners for receiving user data.
      */
+
     setupIpcListeners() {
         ipcRenderer.on('user-data', (event, user) => {
-            console.log('Dados do usuário recebidos:', user);  // Verifique aqui se os dados estão corretos
             this.userId = user.id;
             this.userPermissionId = user.permissionId;
             this.populateUserData(user);
@@ -60,10 +60,23 @@ class ConfigurationsView {
                 option.textContent = company.name;
                 this.selectCompanyElement.appendChild(option);
             });
+
+            new TomSelect(this.selectCompanyElement, {
+                create: false,
+                render: {
+                    no_results: function (data) {
+                        return `<div class="no-results">Nenhum evento encontrado</div>`;
+                    }
+                },
+                sortField: 'text',
+                placeholder: 'Pesquisar',
+                maxItems: 1
+            });
         } else {
             this.selectCompanyElement.innerHTML = '<option value="">Nenhuma empresa encontrada</option>';
         }
     }
+
 
     /**
      * Adds the default "Pesquisar" option to the companies dropdown.
@@ -93,6 +106,7 @@ class ConfigurationsView {
      */
     populateEventSelect(events) {
         this.selectEventElement.innerHTML = '';
+
         events.forEach(event => {
             const option = document.createElement('option');
             option.value = event._id;
@@ -100,6 +114,68 @@ class ConfigurationsView {
             this.selectEventElement.appendChild(option);
         });
         this.selectEventElement.disabled = false;
+
+        // Inicializa o TomSelect
+        const selectEvent = new TomSelect(this.selectEventElement, {
+            create: async (input) => {
+                try {
+                    selectEvent.dropdown_content.querySelector('.create').textContent = `Adicionando...`;
+                    selectEvent.dropdown_content.querySelector('.create').classList.add('disabled');
+
+                    const companyId = this.selectCompanyElement.value;
+                    if (!companyId || companyId === '') {
+                        this.displayErrorMessage('Nenhuma empresa selecionada');
+                        selectEvent.dropdown_content.querySelector('.create').textContent = `Adicionar "${input}"`;
+                        selectEvent.dropdown_content.querySelector('.create').classList.remove('disabled');
+                        return false;
+                    }
+
+                    const response = await ipcRenderer.invoke('create-new-event', input, companyId);
+
+                    if (response.error) {
+                        selectEvent.close();
+                        this.displayErrorMessage(response.message);
+                        selectEvent.dropdown_content.querySelector('.create').textContent = `Adicionar "${input}"`;
+                        selectEvent.dropdown_content.querySelector('.create').classList.remove('disabled');
+                        return false;
+                    }
+
+                    const newOption = {
+                        value: response.data,
+                        text: input
+                    };
+                    
+
+                    selectEvent.addOption(newOption);
+                    selectEvent.addItem(newOption.value); 
+                    selectEvent.refreshItems();  
+
+                    this.selectEventElement.value = newOption.value;
+                    selectEvent.setValue(newOption.value); 
+
+                    return newOption;
+
+                } catch (error) {
+                    console.error('Erro ao criar evento:', error);
+                    this.resetEventSelect();
+                    selectEvent.dropdown_content.querySelector('.create').textContent = `Adicionar "${input}"`;
+                    selectEvent.dropdown_content.querySelector('.create').classList.remove('disabled');
+                    return false;
+                }
+            },
+            render: {
+                option_create: function (data, escape) {
+                    return `<div class="create">Adicionar "${escape(data.input)}"</div>`;
+                },
+                no_results: function (data) {
+                    return `<div class="no-results">Nenhum evento encontrado</div>`;
+                }
+            },
+            sortField: 'text',
+            placeholder: 'Pesquisar ou adicionar um evento',
+            maxItems: 1
+        });
+
     }
 
     /**

@@ -76,7 +76,6 @@ ipcMain.on('logout', () => {
     const watcherMain = folderController.getWatcher();  
     if (watcherMain && !watcherMain.isDestroyed()) {
         watcherMain.close(); 
-        console.log('Monitoramento da pasta encerrado.');
     }
 
     userModel.clearUserData(); 
@@ -95,7 +94,6 @@ ipcMain.on('backc', () => {
     const watcherMain = folderController.getWatcher(); 
     if (watcherMain && !watcherMain.isDestroyed()) {
         watcherMain.close(); 
-        console.log('Monitoramento da pasta encerrado.');
     }
 
     const user = userModel.getUserData();
@@ -135,6 +133,15 @@ ipcMain.handle('save-configurations', async (event, { companyId, eventId }) => {
  */
 ipcMain.handle('fetch-company-events', async (event, { companyId }) => {
     return await eventController.fetchCompanyEvents(companyId);
+});
+
+/**
+ * Handle for create new event
+ * @param {Object} eventName - Text of the input event name
+ * @returns {Boolean} - Boolean if success or not
+ */
+ipcMain.handle('create-new-event', async (event, eventName, companyId) => {
+    return await eventController.handleCreateEvent(eventName, companyId);
 });
 
 /**

@@ -11,7 +11,6 @@ const userModel = require('../models/userModel');
 async function handleUserSync(user) {
     try {
         if (!user) {
-            console.log('ERRO: Nenhum dado de usuário recebido.');
             logger.logEvent('Sincronização', 'Nenhum dado de usuário recebido.');
             return false;
         }
@@ -31,10 +30,7 @@ async function handleUserSync(user) {
         const companies = await handleGetCompanies(user.companyId);
 
         if (companies && companies.length > 0) {
-            console.log('Sincronizando empresas com o modelo.');
             userModel.updateCompanyData(companies);
-        } else {
-            console.log('Nenhuma empresa encontrada ou sincronizada.');
         }
 
 
@@ -89,19 +85,15 @@ async function handleGetCompanies(companyIds) {
             logger.logEvent('Sincronização de Empresas', 'Empresas sincronizadas com sucesso.');
             return companyData;
         } else {
-            console.log('ERRO: Nenhuma empresa encontrada.', response.data);
             logger.logEvent('Sincronização de Empresas', 'Nenhuma empresa encontrada.');
             return [];
         }
     } catch (error) {
         if (error.response) {
-            console.log('Erro do Servidor:', error.response.data);
             logger.logEvent('Error details', JSON.stringify(error.response.data));
         } else if (error.request) {
-            console.log('Erro de Requisição:', error.request);
             logger.logEvent('Error', 'Nenhuma resposta recebida do servidor.');
         } else {
-            console.log('Erro:', error.message);
             logger.logEvent('Error fetching companies', error.message);
         }
 
@@ -118,8 +110,6 @@ async function handleGetCompanies(companyIds) {
 async function saveConfigurations(companyId, eventId) {
     try {
       if(!companyId || !eventId || eventId == '' || companyId == "") {
-        console.log('ID da empresa ou ID do evento não encontrado.');
-        logger.log("ID da empresa ou ID do evento não econtrado.", "Erro.");
         return false;
       } 
 
@@ -127,7 +117,6 @@ async function saveConfigurations(companyId, eventId) {
 
       return true;
     } catch (error) {
-        console.log('Erro ao salvar configurações:', error.message);
         logger.logEvent('Erro ao salvar configurações', error.message);
         return false;
     }

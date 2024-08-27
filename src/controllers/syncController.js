@@ -18,7 +18,6 @@ async function handleMultipleFileAdd(filePaths, isRename = false, delay = 1000) 
     for (const filePath of filePaths) {
         const success = await handleFileAdd(filePath, isRename);
         if (!success) {
-            console.log(`Erro no upload do arquivo ${filePath}`);
             logger.logEvent('Erro no upload ', `Erro no upload do arquivo ${filePath}`);
 
             break; 

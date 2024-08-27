@@ -64,7 +64,7 @@ function createMainWindow() {
 function createConfigurationsWindow(user) {
     let configurationsWindow = new BrowserWindow({
         width: 400,
-        height: 668,
+        height: 700,
         frame: false,
         resizable: false,
         fullscreenable: false,

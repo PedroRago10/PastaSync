@@ -38,14 +38,11 @@ class LoginView {
         const originalButtonContent = this.setLoadingState(true);
 
         try {
-            console.log("Tentando login...");
             const result = await ipcRenderer.invoke('login', { email, password });
 
             if (result.success) {
-                console.log("Login bem-sucedido, redirecionando...");
                 window.location.href = 'configurations.html';
             } else {
-                console.log("Login falhou:", result.message);
                 this.showErrorMessage(result.message);
             }
         } catch (error) {
