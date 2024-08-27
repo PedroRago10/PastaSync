@@ -19,7 +19,7 @@ PastaSync is a desktop application built with Electron for managing and synchron
 1. Clone this repository to your local machine:
 
 ```bash
-git clone https://github.com/your-repo/pastasync.git
+git clone [https://github.com/your-repo/pastasync.git](https://github.com/PedroRago10/PastaSync.git)
 ```
 
 2. Install the required dependencies:
@@ -87,7 +87,3 @@ If you wish to contribute to the project, feel free to submit a pull request or 
 3. Commit your changes: `git commit -m 'Add some feature'`.
 4. Push to the branch: `git push origin feature/your-feature`.
 5. Open a pull request.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
