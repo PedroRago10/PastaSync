@@ -22,8 +22,8 @@ jobs:
     - name: Install dependencies
       run: npm install
 
-    - name: Build Electron App
-      run: npm run build -- --mac
+    - name: Build PastaSync App
+      run: npm run build -- --mac --publish=never
 
     - name: Upload build artifacts
       uses: actions/upload-artifact@v2
