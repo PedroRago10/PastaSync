@@ -8,6 +8,7 @@ class ConfigurationsView {
         this.selectEventElement = document.querySelector('select[name="events"]');
         this.errorMessageElement = document.getElementById('error-message');
         this.buttonSaveConfigurations = document.getElementById("saveConfigurationsBtn");
+        this.eventSelectInstance = null; 
         this.initialize();
     }
 
@@ -92,6 +93,11 @@ class ConfigurationsView {
      * Resets the events select dropdown.
      */
     resetEventSelect() {
+        if (this.eventSelectInstance) {
+            this.eventSelectInstance.destroy();
+            this.eventSelectInstance = null;
+        }
+        
         this.selectEventElement.innerHTML = '';
         const defaultOption = document.createElement('option');
         defaultOption.value = "";
@@ -116,27 +122,27 @@ class ConfigurationsView {
         this.selectEventElement.disabled = false;
 
         // Inicializa o TomSelect
-        const selectEvent = new TomSelect(this.selectEventElement, {
+        this.eventSelectInstance = new TomSelect(this.selectEventElement, {
             create: async (input) => {
                 try {
-                    selectEvent.dropdown_content.querySelector('.create').textContent = `Adicionando...`;
-                    selectEvent.dropdown_content.querySelector('.create').classList.add('disabled');
+                    this.eventSelectInstance.dropdown_content.querySelector('.create').textContent = `Adicionando...`;
+                    this.eventSelectInstance.dropdown_content.querySelector('.create').classList.add('disabled');
 
                     const companyId = this.selectCompanyElement.value;
                     if (!companyId || companyId === '') {
                         this.displayErrorMessage('Nenhuma empresa selecionada');
-                        selectEvent.dropdown_content.querySelector('.create').textContent = `Adicionar "${input}"`;
-                        selectEvent.dropdown_content.querySelector('.create').classList.remove('disabled');
+                        this.eventSelectInstance.dropdown_content.querySelector('.create').textContent = `Adicionar "${input}"`;
+                        this.eventSelectInstance.dropdown_content.querySelector('.create').classList.remove('disabled');
                         return false;
                     }
 
                     const response = await ipcRenderer.invoke('create-new-event', input, companyId);
 
                     if (response.error) {
-                        selectEvent.close();
+                        this.eventSelectInstance.close();
                         this.displayErrorMessage(response.message);
-                        selectEvent.dropdown_content.querySelector('.create').textContent = `Adicionar "${input}"`;
-                        selectEvent.dropdown_content.querySelector('.create').classList.remove('disabled');
+                        this.eventSelectInstance.dropdown_content.querySelector('.create').textContent = `Adicionar "${input}"`;
+                        this.eventSelectInstance.dropdown_content.querySelector('.create').classList.remove('disabled');
                         return false;
                     }
 
@@ -144,22 +150,21 @@ class ConfigurationsView {
                         value: response.data,
                         text: input
                     };
-                    
 
-                    selectEvent.addOption(newOption);
-                    selectEvent.addItem(newOption.value); 
-                    selectEvent.refreshItems();  
+                    this.eventSelectInstance.addOption(newOption);
+                    this.eventSelectInstance.addItem(newOption.value); 
+                    this.eventSelectInstance.refreshItems();  
 
                     this.selectEventElement.value = newOption.value;
-                    selectEvent.setValue(newOption.value); 
+                    this.eventSelectInstance.setValue(newOption.value); 
 
                     return newOption;
 
                 } catch (error) {
                     console.error('Erro ao criar evento:', error);
                     this.resetEventSelect();
-                    selectEvent.dropdown_content.querySelector('.create').textContent = `Adicionar "${input}"`;
-                    selectEvent.dropdown_content.querySelector('.create').classList.remove('disabled');
+                    this.eventSelectInstance.dropdown_content.querySelector('.create').textContent = `Adicionar "${input}"`;
+                    this.eventSelectInstance.dropdown_content.querySelector('.create').classList.remove('disabled');
                     return false;
                 }
             },
@@ -177,6 +182,7 @@ class ConfigurationsView {
         });
 
     }
+
 
     /**
      * Sets a random banner image in the view.
@@ -203,9 +209,9 @@ class ConfigurationsView {
      */
     async onCompanyChange(event) {
         const companyId = event.target.value;
+        this.resetEventSelect();
 
         if (!companyId) {
-            this.resetEventSelect();
             return;
         }
 

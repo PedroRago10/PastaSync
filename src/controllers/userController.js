@@ -72,24 +72,28 @@ async function handleGetCompanies(companyIds) {
 
         const API_URL = process.env.API_URL || "https://api.samambaialabs.com.br";
 
-        const response = await axios.post(`${API_URL}/company/filter`, { ids: companyIds }, config);
+        const response = await axios.get(`${API_URL}/company/list`, {
+            params: { filters: JSON.stringify({ ids: companyIds }) },
+            ...config
+        });
 
         if (response.status === 200 && response.data && Array.isArray(response.data.companies)) {
 
-            const filteredCompanies = response.data.companies.filter(company => company.active !== null);
-            const companyData = filteredCompanies.map(company => ({
+            const companyData = response.data.companies.map(company => ({
                 id: company._id,
                 name: company.name
             }));
-
+            
             logger.logEvent('Sincronização de Empresas', 'Empresas sincronizadas com sucesso.');
             return companyData;
         } else {
+
             logger.logEvent('Sincronização de Empresas', 'Nenhuma empresa encontrada.');
             return [];
         }
     } catch (error) {
         if (error.response) {
+
             logger.logEvent('Error details', JSON.stringify(error.response.data));
         } else if (error.request) {
             logger.logEvent('Error', 'Nenhuma resposta recebida do servidor.');

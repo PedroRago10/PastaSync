@@ -13,9 +13,7 @@ async function fetchCompanyEvents(companyId, eventName = false) {
         if (!tokenModel.token) {
             throw new Error('Token não disponível');
         }
-
         const user = userModel.getUserData();
-        const userId = user.id;
 
         const config = {
             headers: {
@@ -26,20 +24,19 @@ async function fetchCompanyEvents(companyId, eventName = false) {
 
         const API_URL = process.env.API_URL || "https://api.samambaialabs.com.br";
 
-        let dataParams = {
-            userId,
+        let filters = {
             companyId,
         }
         
         if (eventName && eventName.trim() !== "") {
-            dataParams = {
-                ...dataParams,
+            filters = {
+                ...filters,
                 eventName
             }
         }
 
-        const response = await axios.get(`${API_URL}/event/company-user-events`, {
-            params: dataParams,
+        const response = await axios.get(`${API_URL}/event/list`, {
+            params: { filters: JSON.stringify(filters) }, 
             ...config
         });
 
