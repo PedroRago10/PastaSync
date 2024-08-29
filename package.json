@@ -1,7 +1,7 @@
 {
   "name": "PastaSync",
   "version": "1.0.0",
-  "author": "PedroRago",
+  "author": "Pedro Rago",
   "license": "ISC",
   "description": "Uma aplicação para monitoramento e sincronização de pastas",
   "main": "main.js",
