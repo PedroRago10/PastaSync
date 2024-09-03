@@ -20,7 +20,7 @@ async function handleUserSync(user) {
             email: user.email || null,
             imageUrl: user.imageUrl || null,
             role: user.role || null,
-            companies: [], 
+            companies: [],
             eventId: user.eventId || [],
             permissionName: user.permissionName || null,
             permissionId: user.permissionId || null
@@ -66,7 +66,7 @@ async function handleGetCompanies(companyIds) {
         const config = {
             headers: {
                 'Authorization': `Bearer ${tokenModel.token}`,
-                'X-Permission-Id': user.permissionId 
+                'X-Permission-Id': user.permissionId
             }
         };
 
@@ -83,7 +83,7 @@ async function handleGetCompanies(companyIds) {
                 id: company._id,
                 name: company.name
             }));
-            
+
             logger.logEvent('Sincronização de Empresas', 'Empresas sincronizadas com sucesso.');
             return companyData;
         } else {
@@ -113,13 +113,39 @@ async function handleGetCompanies(companyIds) {
  */
 async function saveConfigurations(companyId, eventId) {
     try {
-      if(!companyId || !eventId || eventId == '' || companyId == "") {
-        return false;
-      } 
+        if (!companyId || !eventId || eventId == '' || companyId == "") {
+            return false;
+        }
 
-      userModel.updateCompanyAndEventIds(companyId, eventId);
+        userModel.updateCompanyAndEventIds(companyId, eventId);
 
-      return true;
+        const user = userModel.getUserData();
+
+        const config = {
+            headers: {
+                'Authorization': `Bearer ${tokenModel.token}`,
+                'X-Permission-Id': user.permissionId
+            }
+        };
+
+        const API_URL = process.env.API_URL || "https://api.samambaialabs.com.br";
+
+        const response = await axios.get(`${API_URL}/frames/get-configurations`, {
+            params: {
+                companyId: companyId,
+                eventId: eventId,
+            },
+            ...config
+        });
+
+        if (response.status === 200 && Array.isArray(response.data.configurations)) {
+            userModel.updateFrameConfig(response.data.configurations);
+        } else {
+            logger.logEvent('Error fetching events', 'Nenhuma configuração de moldura encontrada ou resposta inválida.');
+        }
+
+        return true;
+
     } catch (error) {
         logger.logEvent('Erro ao salvar configurações', error.message);
         return false;

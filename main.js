@@ -92,9 +92,10 @@ ipcMain.on('backc', () => {
         mainWindow.close();
     }
     const watcherMain = folderController.getWatcher(); 
-    if (watcherMain && !watcherMain.isDestroyed()) {
+    if (watcherMain) {
         watcherMain.close(); 
     }
+
 
     const user = userModel.getUserData();
     configurationsWindow = windowController.createConfigurationsWindow(user);  

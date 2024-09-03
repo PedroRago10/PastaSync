@@ -9,7 +9,7 @@ const userModel = {
     eventId: [],
     permissionName: null,
     permissionId: null,
-
+    configurationsFrame: [],
     /**
      * Save the logged-in user's data.
      * @param {Object} userData - User data to be stored.
@@ -59,7 +59,8 @@ const userModel = {
             companies: this.companies,
             eventId: this.eventId,
             permissionId: this.permissionId,
-            permissionName: this.permissionName
+            permissionName: this.permissionName,
+            configurationsFrame: this.configurationsFrame
         };
     },
 
@@ -96,6 +97,16 @@ const userModel = {
     updateCompanyAndEventIds(newCompanyId, newEventId) {
         this.companyId = [newCompanyId];
         this.eventId = [newEventId];
+    },
+
+    /**
+     * Update frames configs
+     * @param {String} frame - The toogle status
+     * @param {String} horizontal - The url image frame horizontal
+     * @param {String} vertical - The url image frame vertical
+     */
+    updateFrameConfig(configurationsFrame) {
+        this.configurationsFrame = configurationsFrame;
     }
 };
 

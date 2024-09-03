@@ -8,6 +8,8 @@ const userModel = require('../models/userModel');
 const tokenModel = require('../models/tokenModel');
 const axios = require('axios');
 const FormData = require('form-data');
+const sharp = require('sharp');
+
 /**
  * Handle the addition of multiple files, with a delay between uploads.
  * @param {Array<String>} filePaths - Array of file paths to be added or renamed.
@@ -15,14 +17,16 @@ const FormData = require('form-data');
  * @param {Number} delay - Delay in milliseconds between file uploads.
  */
 async function handleMultipleFileAdd(filePaths, isRename = false, delay = 1000) {
-    for (const filePath of filePaths) {
+    const uniqueFilePaths = filePaths.filter(filePath => !filePath.includes('-processed'));  
+    if (uniqueFilePaths.length === 0) return;
+
+    for (const filePath of uniqueFilePaths) {
         const success = await handleFileAdd(filePath, isRename);
         if (!success) {
             logger.logEvent('Erro no upload ', `Erro no upload do arquivo ${filePath}`);
-
-            break; 
+            break;
         }
-        await new Promise(resolve => setTimeout(resolve, delay)); // Atraso entre os uploads
+        await new Promise(resolve => setTimeout(resolve, delay)); 
     }
 }
 
@@ -33,13 +37,13 @@ async function handleMultipleFileAdd(filePaths, isRename = false, delay = 1000) 
  * @returns {Boolean} - Whether the file was successfully uploaded.
  */
 async function handleFileAdd(filePath, isRename = false) {
-    const fileName = path.basename(filePath);
+    notificationController.notify('Arquivo em processamento', 'Iniciando processamento do arquivo');
+    let fileName = path.basename(filePath);
     const fileExtension = path.extname(filePath).toLowerCase();
     const supportedExtensions = ['.png', '.jpeg', '.jpg', '.tiff', '.raw', '.heic', '.heif', '.gif', '.bmp', '.webp', '.svg', '.mp4'];
 
     let errorTitle, errorMessage;
 
-    // Check if the file type is supported
     if (!supportedExtensions.includes(fileExtension)) {
         errorTitle = "Erro no Upload";
         errorMessage = `Formato de arquivo ${fileExtension} não suportado.`;
@@ -48,7 +52,11 @@ async function handleFileAdd(filePath, isRename = false) {
         return false;
     }
 
-    // Load the user data
+    if (filePath.includes('-processed')) {
+        console.log(`Arquivo já processado: ${filePath}. Ignorando...`);
+        return false;
+    }
+
     const user = userModel.getUserData();
     const token = tokenModel.token;
 
@@ -60,13 +68,9 @@ async function handleFileAdd(filePath, isRename = false) {
         return false;
     }
 
-    // Calculate the hash of the file
     const fileHash = await fileService.calculateFileHash(filePath);
-
-    // Load the registry of uploaded photos
     const uploadedPhotos = uploadedPhotosModel.loadUploadedPhotos();
 
-    // Check if the file has already been uploaded
     if (uploadedPhotos[fileHash] && uploadedPhotos[fileHash].filePath === filePath) {
         errorTitle = "Upload Duplicado";
         errorMessage = `O arquivo ${fileName} já foi enviado.`;
@@ -75,23 +79,67 @@ async function handleFileAdd(filePath, isRename = false) {
         return false;
     }
 
-    // Handle renaming scenario
     if (isRename) {
         errorTitle = "Arquivo renomeado";
         errorMessage = `Tratando o arquivo renomeado como novo upload.`;
         logger.logEvent(errorTitle, errorMessage);
     }
 
-    // Prepare form data for API upload
-    const fileStream = fs.createReadStream(filePath);
-    const formData = new FormData();
-
-    formData.append('images', fileStream, fileName);
-    formData.append('eventId', user.eventId[0]);
-    formData.append('userId', user.id);
-    formData.append('companyId', user.companyId[0]);
-
     try {
+        let image = sharp(filePath);
+        const metadata = await image.metadata();
+        const isHorizontal = metadata.width > metadata.height;
+
+        const selectedFrame = user.configurationsFrame.find(frame => {
+            if (isHorizontal) {
+                return frame.horizontal && frame.active;
+            } else {
+                return frame.vertical && frame.active;
+            }
+        });
+        let original;
+        if (selectedFrame) {
+            const molduraUrl = isHorizontal ? selectedFrame.horizontal : selectedFrame.vertical;
+
+            if (molduraUrl) {
+                console.log(`Tentando acessar a URL da moldura: https://samambaialabs-bucket.nyc3.digitaloceanspaces.com/${molduraUrl}`);
+
+                const response = await axios.get(`https://samambaialabs-bucket.nyc3.digitaloceanspaces.com/${molduraUrl}`, { responseType: 'arraybuffer' });
+
+                if (response.status === 200) {
+                    console.log(`Moldura baixada com sucesso. Tamanho: ${response.data.length} bytes`);
+                    const molduraBuffer = Buffer.from(response.data, 'binary');
+
+                    image = await image
+                        .composite([{ input: molduraBuffer, gravity: 'center' }])
+                        .toBuffer();
+
+                    const processedImagePath = filePath.replace(fileExtension, `-processed${fileExtension}`);
+                    const processedFileName = path.basename(processedImagePath);
+                    await sharp(image).toFile(processedImagePath);
+
+                    original = filePath;
+
+
+                    filePath = processedImagePath;
+
+                    fileName = processedFileName;
+                } else {
+                    throw new Error(`Falha ao baixar a moldura. Status: ${response.status}`);
+                }
+            }
+        }
+
+        console.log(filePath)
+        
+        const fileStream = fs.createReadStream(filePath);
+        const formData = new FormData();
+
+        formData.append('images', fileStream, fileName);
+        formData.append('eventId', user.eventId[0]);
+        formData.append('userId', user.id);
+        formData.append('companyId', user.companyId[0]);
+
         const API_URL = process.env.API_URL || "https://api.samambaialabs.com.br";
 
         const response = await axios.post(`${API_URL}/image/upload`, formData, {
@@ -103,17 +151,23 @@ async function handleFileAdd(filePath, isRename = false) {
         });
 
         if (response.status === 201) {
-            // Calculate the hash and update the registry, even for renamed files
             const fileHash = await fileService.calculateFileHash(filePath);
             uploadedPhotosModel.registerUploadedFile(fileHash, filePath, response.data.location);
 
             notificationController.notify("Upload Bem-sucedido", `O arquivo ${fileName} foi enviado com sucesso.`);
             logger.logEvent('Upload bem-sucedido', response.data.location);
+            
+            if(original) {
+                fs.unlinkSync(original);
+            }
+
             return true;
         } else {
             throw new Error('Falha ao carregar imagens');
         }
     } catch (error) {
+        console.error('Erro ao processar os arquivos:', error);
+
         if (error.response) {
             errorTitle = "Erro no Upload";
             errorMessage = `Falha ao enviar o arquivo ${fileName}.`;
@@ -152,11 +206,11 @@ async function handleFileDelete(filePath) {
         });
 
         if (response.status === 200) {
-            notificationController.notify('Arquivo Removido', `O arquivo foi removido da nuvem: ${filePath}`);
+            //notificationController.notify('Arquivo Removido', `O arquivo foi removido da nuvem: ${filePath}`);
             logger.logEvent('Arquivo removido do espaço', filePath);
             return true;
         } else {
-            notificationController.notify('Erro ao Remover', `Falha ao remover o arquivo ${filePath}. Erro: ${response.data}`);
+            //notificationController.notify('Erro ao Remover', `Falha ao remover o arquivo ${filePath}. Erro: ${response.data}`);
             logger.logEvent('Falha ao remover do espaço', filePath);
             return false;
         }
@@ -174,7 +228,7 @@ async function handleFileDelete(filePath) {
             logger.logEvent('Detalhes do erro na resposta:', error.response.data);
         }
 
-        notificationController.notify('Erro ao Remover', `Falha ao remover o arquivo ${filePath}. Erro: ${error.message}`);
+        //notificationController.notify('Erro ao Remover', `Falha ao remover o arquivo ${filePath}. Erro: ${error.message}`);
         return false;
     }
 }
