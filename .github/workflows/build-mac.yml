@@ -19,14 +19,11 @@ jobs:
       with:
         node-version: '20.16.0'
 
-    - name: Install dependencies
+    - name: Install Dependencies
       run: npm install
 
     - name: Install Sharp for macOS ARM64
-      run: npm install --platform=darwin --arch=arm64 sharp
-
-    - name: Rebuild native modules for macOS ARM64
-      run: npx electron-rebuild --arch=arm64
+      run: npm install @img/sharp-darwin-arm64
 
     - name: Build PastaSync App for macOS
       run: npm run build -- --mac --publish=never
