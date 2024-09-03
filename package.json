@@ -7,7 +7,8 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "build": "electron-builder"
+    "build": "electron-builder",
+    "build:win": "npm rebuild sharp --arch=x64 --platform=win32 && electron-builder --win"
   },
   "build": {
     "appId": "com.pasta.sync",
@@ -55,5 +56,8 @@
     "cross-env": "^7.0.3",
     "electron": "^31.4.0",
     "electron-builder": "^24.13.3"
-  }
+  },
+  "optionalDependencies": {
+  "sharp": "^0.33.5"
+}
 }

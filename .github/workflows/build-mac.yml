@@ -22,11 +22,14 @@ jobs:
     - name: Install dependencies
       run: npm install
 
-    - name: Build PastaSync App
+    - name: Rebuild native modules for macOS ARM64
+      run: npx electron-rebuild --arch=arm64
+
+    - name: Build PastaSync App for macOS
       run: npm run build -- --mac --publish=never
 
     - name: Upload build artifacts
       uses: actions/upload-artifact@v2
       with:
-        name: PastaSync-install-v2
-        path: dist/ 
+        name: PastaSync-macOS
+        path: dist/
