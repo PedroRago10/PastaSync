@@ -19,17 +19,14 @@ jobs:
       with:
         node-version: '20.16.0'
 
-    - name: Install Dependencies
+    - name: Install dependencies
       run: npm install
 
-    - name: Install Sharp for macOS ARM64
-      run: npm install @img/sharp-darwin-arm64
-
-    - name: Build PastaSync App for macOS
+    - name: Build PastaSync App
       run: npm run build -- --mac --publish=never
 
     - name: Upload build artifacts
       uses: actions/upload-artifact@v2
       with:
-        name: PastaSync-macOS
-        path: dist/
+        name: PastaSync-install-v3
+        path: dist/ 

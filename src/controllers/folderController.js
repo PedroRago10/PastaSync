@@ -57,7 +57,7 @@ function startWatchingFolder(folderPath) {
     });
 
     watcher.on('unlink', (filePath) => {
-        //notificationController.notify('Arquivo Removido', `Arquivo removido: ${filePath}`);
+        notificationController.notify('Arquivo Removido', `Arquivo removido: ${filePath}`);
         deleteQueue.push(filePath); 
 
         // Start processing the deletion queue after 500ms delay if it's the first file

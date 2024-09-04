@@ -12,11 +12,6 @@
   "build": {
     "appId": "com.pasta.sync",
     "productName": "PastaSync",
-    "asar": true,
-    "asarUnpack": [
-      "**/node_modules/sharp/**/*",
-      "**/node_modules/@img/**/*"
-    ],
     "directories": {
       "output": "dist"
     },

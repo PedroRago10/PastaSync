@@ -74,7 +74,7 @@ ipcMain.on('logout', () => {
     }
 
     const watcherMain = folderController.getWatcher();  
-    if (watcherMain && !watcherMain.isDestroyed()) {
+    if (watcherMain) {
         watcherMain.close(); 
     }
 
@@ -88,7 +88,7 @@ ipcMain.on('logout', () => {
  * Closes the main window and stops folder monitoring.
  */
 ipcMain.on('backc', () => {
-    if (mainWindow && !mainWindow.isDestroyed()) {
+    if (mainWindow) {
         mainWindow.close();
     }
     const watcherMain = folderController.getWatcher(); 
