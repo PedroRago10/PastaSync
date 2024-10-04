@@ -8,6 +8,7 @@ const userModel = require('../models/userModel');
 const tokenModel = require('../models/tokenModel');
 const axios = require('axios');
 const FormData = require('form-data');
+
 /**
  * Handle the addition of multiple files, with a delay between uploads.
  * @param {Array<String>} filePaths - Array of file paths to be added or renamed.
@@ -16,16 +17,24 @@ const FormData = require('form-data');
  */
 async function handleMultipleFileAdd(filePaths, isRename = false, delay = 1000) {
     for (const filePath of filePaths) {
-        const success = await handleFileAdd(filePath, isRename);
-        if (!success) {
-            console.log(`Erro no upload do arquivo ${filePath}`);
-            logger.logEvent('Erro no upload ', `Erro no upload do arquivo ${filePath}`);
-
-            break; 
+        try {
+            const success = await handleFileAdd(filePath, isRename);
+            if (!success) {
+                console.log(`Erro no upload do arquivo ${filePath}`);
+                logger.logEvent('Erro no upload', `Erro no upload do arquivo ${filePath}`);
+            }
+        } catch (error) {
+            // Se ocorrer um erro, logar o erro e continuar o loop
+            console.error(`Erro ao processar o arquivo ${filePath}:`, error);
+            logger.logEvent('Erro ao processar arquivo', `Arquivo ${filePath} falhou. Motivo: ${error.message}`);
+            notificationController.notify("Erro no Upload", `O arquivo ${filePath} não foi enviado. Motivo: ${error.message}`);
         }
-        await new Promise(resolve => setTimeout(resolve, delay)); 
+        // Espera o delay antes de continuar com o próximo arquivo, mesmo que o anterior tenha falhado
+        await new Promise(resolve => setTimeout(resolve, delay));
     }
+    logger.logEvent('Processamento Concluído', 'Todos os arquivos da fila foram processados, erros foram registrados.');
 }
+
 
 /**
  * Handle the addition of a single file, with support for renaming.
